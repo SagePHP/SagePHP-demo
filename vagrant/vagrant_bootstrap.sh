@@ -1,10 +1,10 @@
 #!/bin/bash
 
   echo "### setting hostname"
-  hostname scruno-board.local
-  if [ -z `grep -Fl scruno-board.local /etc/hosts` ]; then
+  hostname demo-sage-php.local
+  if [ -z `grep -Fl demo-sage-php.local /etc/hosts` ]; then
     echo >>/etc/hosts
-    echo "192.158.50.51 scruno-board.local" >>/etc/hosts
+    echo "192.158.50.51 demo-sage-php.local" >>/etc/hosts
   fi
 
   echo "### Fixing dns entries"
@@ -18,15 +18,13 @@
   echo "### install base system"
   yum install -y php httpd mysql-server libmemcached php-xml php-bcmath php-cli php-mbstring php-mysql php-process php-pecl-memcache php-curl php-intl php-pear git
 
-  echo "### install php dev utils"
   pear upgrade pear
+
+  echo "### install PHPUnit"
   pear channel-discover pear.phpunit.de
   pear channel-discover components.ez.no
   pear channel-discover pear.symfony.com
-  pear channel-discover pear.phing.info
-
   pear install --alldeps phpunit/PHPUnit
-  pear install phing/phing
 
   echo "### setting up php"
   PHP_SETTINGS='
@@ -46,11 +44,9 @@
   echo "### Configuring Apache"
   APACHE_CONFIG='
   <VirtualHost *:80>
-    DocumentRoot "/var/www/html/web"
-    ServerName scrunno.local
-    #ErrorLog "/srv/www/v2/data/logs/error_log"
-    #CustomLog "/srv/www/v2/data/logs/access_log" common
-    <Directory /var/www/html/web>
+    DocumentRoot "/var/www/html/symfony-2.3.0/web"
+    ServerName symfony-2.3.0.demo-sage-php.local
+    <Directory /var/www/html/symfony-2.3.0/web>
       AllowOverride All
       Options Indexes FollowSymLinks
       Order allow,deny
@@ -58,7 +54,7 @@
     </Directory>
   </VirtualHost>
   '
-  echo "${APACHE_CONFIG}" >/etc/httpd/conf.d/scrunno.conf
+  echo "${APACHE_CONFIG}" >/etc/httpd/conf.d/symfony-2.3.0.conf
   a2enmod rewrite
 
   echo "### stop selinux"
