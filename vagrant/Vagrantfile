@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "CentOs-6.0"
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  config.vm.box_url = "http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box"
+
+  config.vm.network :forwarded_port, guest: 80, host: 8080, auto_correct: true
+  config.vm.network :private_network, ip: "192.168.50.51"
+
+#  config.vm.synced_folder "../code", "/var/www/html/", :nfs => true
+
+
+  config.vm.provider :virtualbox do |vb|
+     # Don't boot with headless mode
+#     vb.gui = true
+  
+     # Use VBoxManage to customize the VM. For example to change memory:
+     vb.customize ["modifyvm", :id, "--memory", "512"]
+  end
+
+  config.vm.provision :shell, :path => "vagrant_bootstrap.sh"
+
+end
